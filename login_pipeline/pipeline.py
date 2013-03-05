@@ -5,10 +5,10 @@ from django.contrib import messages
 from django.shortcuts import redirect
 
 
-def logout(request, user=None, *args, **context):
+def logout(request,context):
 
-    if user:
-        return {}
+    if context.get('user'):
+        return None
 
     if request.user.is_authenticated():
         auth.logout(request)
@@ -16,18 +16,20 @@ def logout(request, user=None, *args, **context):
         request.session['login_pipeline_context'] = context
 
 
-def authenticate(request, user=None, *args, **context):
+def authenticate(request,context):
 
-    if user:
-        return {}
+    if context.get('user'):
+        return None
     
     return redirect('login_pipeline_form')
 
-def check_email(request, user=None, *args, **context):
 
+def check_email(request,context):
+
+    user = context['user']
     user.email = User.objects.get(pk=user.pk).email
     if not user.email:
         request.session['no_email_redirect'] = 'login_pipeline'
         return redirect('no_email')
 
-    return {'user':user}
+    return None

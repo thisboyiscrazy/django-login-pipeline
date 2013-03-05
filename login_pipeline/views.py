@@ -34,13 +34,11 @@ def login(request, *args, **kwargs):
 
     for func in MAPPED_PIPELINE:
         try:
-            result = func(request=request, **context) or {}
+            result = func(request,context)
         except StopPipeline as e:
             raise e
 
-        if isinstance(result, dict):
-            context.update(result)
-        else:
+        if result:
             return result
 
     redirect_to = request.REQUEST.get(auth.REDIRECT_FIELD_NAME, '')
