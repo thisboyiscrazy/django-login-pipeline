@@ -1,13 +1,15 @@
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 def pipeline_user(request):
 
-    login_pipeline = request.session.get('login_pipeline')
+    context = request.session.get('login_pipeline_context')
 
-    if not login_pipeline:
+    if not context:
         return AnonymousUser()
 
-    user = login_pipeline['kwargs']['user']
+    user = context.get('user') or AnonymousUser()
 
     return user

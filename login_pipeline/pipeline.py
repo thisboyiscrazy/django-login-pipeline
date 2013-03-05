@@ -1,46 +1,31 @@
 from django.contrib import auth
+User = auth.get_user_model()
 from django.template.response import TemplateResponse
 from django.contrib import messages
-from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 
-def logout(request,index,*args,**kwargs):
 
+def logout(request, user=None, *args, **context):
+
+    if user:
+        return {}
+
+    import pdb;pdb.set_trace()
     if request.user.is_authenticated():
         auth.logout(request)
 
-        request.session['login_pipeline'] = {
-            'index': index,
-            'args':args,
-            'kwargs':kwargs,
-        }
+        request.session['login_pipeline_context'] = context
 
-def authenticate(request,*args,**kwargs):
+
+def authenticate(request, user=None, *args, **context):
+
+    if user:
+        return {}
     
-    if request.method == "POST":
-        
-        form = auth.forms.AuthenticationForm(data=request.POST)
+    return redirect('login_pipeline_form')
 
-        if form.is_valid():
-            if request.session.test_cookie_worked():
-                request.session.delete_test_cookie()
+def check_email(request, user=None, *args, **context):
 
-            return {'user':form.get_user()}
-
-    else:
-
-        form = auth.forms.AuthenticationForm(request)
-
-    request.session.set_test_cookie()
-    return TemplateResponse(
-        request,
-        'registration/login.html',
-        {
-            'form':form,
-        }
-    )
-
-def check_email(request, user=None, *args, **kwargs):
-
+    user.email = User.objects.get(pk=user.pk).email
     if not user.email:
-        return redirect("no_email")
+        return redirect('no_email')
