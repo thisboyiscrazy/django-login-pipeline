@@ -28,4 +28,7 @@ def check_email(request, user=None, *args, **context):
 
     user.email = User.objects.get(pk=user.pk).email
     if not user.email:
+        request.session['no_email_redirect'] = 'login_pipeline'
         return redirect('no_email')
+
+    return {'user':user}
