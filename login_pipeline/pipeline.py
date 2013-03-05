@@ -10,7 +10,6 @@ def logout(request, user=None, *args, **context):
     if user:
         return {}
 
-    import pdb;pdb.set_trace()
     if request.user.is_authenticated():
         auth.logout(request)
 
