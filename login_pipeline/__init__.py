@@ -5,6 +5,9 @@ User = get_user_model()
 
 def pipeline_user(request):
 
+    if request.user.is_authenticated():
+        return request.user
+
     context = request.session.get('login_pipeline_context')
 
     if not context:
