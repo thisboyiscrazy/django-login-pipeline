@@ -23,4 +23,6 @@ class LoginPipelineMiddleware(object):
 
         backend = load_backend(request.user.pk['backend'])
         user = backend.get_user(request.user.pk['pk'])
+        user.backend = request.user.pk['backend']
+
         login(request,user)
