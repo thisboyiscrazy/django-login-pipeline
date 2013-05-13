@@ -3,8 +3,8 @@ from django.contrib.auth import load_backend
 class PipelineUser(object):
 
     def __init__(self,user=None):
-        self._user = user
-        self.pk = {"pk":user.pk,"backend":user.backend}
+        self.__dict__['_user'] = user
+        self.__dict__['pk'] = {"pk":user.pk,"backend":user.backend}
 
     def __getattr__(self, name):
         if name == 'pk':
@@ -12,7 +12,7 @@ class PipelineUser(object):
 
         return getattr(self._user,name)
 
-    def __setattr(self, name, value):
+    def __setattr__(self, name, value):
         if name == 'pk':
             return
 
